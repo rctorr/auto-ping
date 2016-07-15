@@ -1,3 +1,5 @@
+![Captura 1 auto-ping en ejecución](auto-ping-captura-1.png)
+
 # auto-ping
 
 Realiza ping a google.com.mx y al gateway (lo determina de forma automática) y muestra los resultados de forma compacta en una terminal
@@ -64,5 +66,3 @@ google.com.mx 26.0 ms
 ```
 
 el script se mantiene funcionando de forma indefinida hasta que se preciona la combinación de teclas Control+C
-
-![Captura 1 auto-ping en ejecución](auto-ping-captura-1.png)
