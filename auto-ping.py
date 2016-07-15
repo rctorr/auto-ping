@@ -1,35 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import re
-import subprocess
-import time
+from time import sleep
+from fping import FastPing
+from subprocess import check_output, call
+from sys import stdout
 
-DEST = 'google.com.mx'
+# Target of international reference
+TARGETS = ['google.com.mx']
 
-route_out = subprocess.check_output('route -n', shell=True)
+# Get ip addres of gateway
+route_out = check_output('route -n', shell=True)
 gateway = route_out.splitlines()[2].split()[1]
+TARGETS.append(gateway)
 
-cmd = 'ping -O -c 1 -n -w 0.5 ' + DEST
-cmd_gateway = 'ping -O -c 1 -n -w 0.5 ' + gateway
+fp = FastPing()
 
 while True:
-    print '-'*79
-    try:
-        cmdout = subprocess.check_output(cmd, shell=True)
-        time_out = re.search('time=(\d+\.\d+ ms)\n', cmdout)
-        time_val = time_out.group(1) if time_out else ''
-    except subprocess.CalledProcessError:
-        time_val = 'packed lost!'
-
-    try:
-        cmdout_gateway = subprocess.check_output(cmd_gateway, shell=True)
-        time_out_gateway = re.search('time=(\d+\.\d+ ms)\n', cmdout_gateway)
-        time_val_gateway = time_out_gateway.group(1) if time_out_gateway else ''
-    except subprocess.CalledProcessError:
-        time_val = 'packed lost!'
-
-    subprocess.call('clear')
-    print '[{}] {} | [{}] {}'.format(DEST, time_val, gateway, time_val_gateway)
-    time.sleep(1)
-
+    res = fp.ping(TARGETS, notDNS=True, elapsed=True)
+    call('clear')
+    for host in res:
+        print host, res[host][1] if res[host] else 'dead'
+    #print '[{}] {} | [{}] {}'.format(DEST, time_val, gateway, time_val_gateway)
+    for i in range(8):
+        print '-',
+        stdout.flush()
+        sleep(0.1)
+    print
